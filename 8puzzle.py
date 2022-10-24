@@ -68,13 +68,13 @@ def create15puzzle(idx):
     return puzzle
 
 # For direction, 0 = left, 1 = right, 2 = up, 3 = down
-def move(puzzle, x, y, direction, dimension):
+def move(currentmove, x, y, direction, dimension):
     
     # If direction is left.
     if direction == 0:
         # If the blank tile is on the left edge, return none.
         if y != 0:
-            return swap(puzzle, x, y, x, y-1)
+            return swap(currentmove, x, y, x, y-1)
         else:
             return None
     
@@ -82,7 +82,7 @@ def move(puzzle, x, y, direction, dimension):
     if direction == 1:
         # If the blank tile is on the right edge, return none.
         if y != dimension - 1:
-            return swap(puzzle, x, y, x, y+1)
+            return swap(currentmove, x, y, x, y+1)
         else:
             return None
     
@@ -90,7 +90,7 @@ def move(puzzle, x, y, direction, dimension):
     if direction == 2:
         # If the blank tile is on the top edge, return none.
         if x != 0:
-            return swap(puzzle, x, y, x-1, y)
+            return swap(currentmove, x, y, x-1, y)
         else:
             return None
      
@@ -98,13 +98,13 @@ def move(puzzle, x, y, direction, dimension):
     if direction == 3:
         # If the blank tile is on the bottom edge, return none.
         if x != dimension - 1:
-            return swap(puzzle, x, y, x+1, y)
+            return swap(currentmove, x, y, x+1, y)
         else:
             return None
 
-def swap(puzzle, x, y, n, k):
+def swap(swapmove, x, y, n, k):
     
-    curr = puzzle
+    curr = swapmove
     
     first = curr[x][y]
     second = curr[n][k]
@@ -114,13 +114,13 @@ def swap(puzzle, x, y, n, k):
     
     return curr
 
-def search(puzzle, num, dimension):
+def search(searchcurr, num, dimension):
     x,y = 0,0
     
     for idx in range(dimension):
-        if num in puzzle[idx]:
+        if num in searchcurr[idx]:
             x = idx
-            y = puzzle[idx].index(num)
+            y = searchcurr[idx].index(num)
             
     return x,y
 
@@ -129,13 +129,13 @@ def search(puzzle, num, dimension):
 # (Re)-Navigate the Solution Path
 # Input: Puzzle Map, Current State, Move Costs
 # Output: Move List
-def navigate(prevstates, curr, costs):
+def navigate(prevstates, location, costs):
     # Initialize the route as a empty list/array
     route = []
     
-    while curr != None:
-        route.append(curr)
-        curr = prevstates[str(curr)]
+    while location is not None:
+        route.append(location)
+        location = prevstates[str(location)]
     
     return route
 
@@ -207,7 +207,7 @@ def difference(puzzle, goal, num, type, dimension):
 # Input: 3x3 8-puzzle (or 4x4 15-puzzle), heuristic 1, goal state, dimension of puzzle
 # Output: Solution Path, if found.
 
-def heuristic_one(puzzle, goal, dimension):
+def heuristic_one(puzzle1, goal, dimension):
     # Initalize heuristic #1 (cost) value to 0
     cost1 = 0
     
@@ -230,7 +230,7 @@ def heuristic_one(puzzle, goal, dimension):
     #     return cost
     
     for i in range(dimension * dimension):
-        if puzzle[i] != goal[i]:
+        if puzzle1[i] != goal[i]:
             cost1 += 1
     return cost1
     
@@ -244,7 +244,7 @@ def heuristic_one(puzzle, goal, dimension):
 # Input: 3x3 8-puzzle (or 4x4 15-puzzle), heuristic 2, goal state, dimension of puzzle
 # Output: Solution Path, if found.
 
-def heuristic_two(puzzle, goal, dimension):
+def heuristic_two(puzzle2, goal, dimension):
     # Initalize heuristic #2 (cost) value to 0
     cost2 = 0
     # Debug Print
@@ -266,8 +266,8 @@ def heuristic_two(puzzle, goal, dimension):
     #     return cost
 
     for i in range(dimension * dimension):
-        if puzzle[i] != 0:
-            goalindex = goal.index(puzzle[i])
+        if puzzle2[i] != 0:
+            goalindex = goal.index(puzzle2[i])
             
             currrow = i // dimension
             currcolumn = i % dimension
@@ -287,41 +287,43 @@ def heuristic_two(puzzle, goal, dimension):
 # Input: 3x3 8-puzzle (or 4x4 15-puzzle), heuristic 3, goal state, dimension of puzzle
 # Output: Solution Path, if found.
 
-def heuristic_three(puzzle, goal, dimension):
+def heuristic_three(puzzle3, goal, dimension):
     # Initalize heuristic #3 (cost) value to 0
     cost = 0
 
     # For the 3x3 8-puzzle
     if dimension == 3:
         for idx in range(1, 9):
-            one = difference(puzzle, goal, idx, 1, dimension)
-            two = difference(puzzle, goal, idx, 2, dimension)
+            one = difference(puzzle3, goal, idx, 1, dimension)
+            two = difference(puzzle3, goal, idx, 2, dimension)
             cost += math.sqrt(pow(one, 2) + pow(two, 2))
         return cost
 
     # For the 4x4 15-puzzle extra credit
     if dimension == 4:
         for idx in range(1, 15):
-            cost += math.sqrt(pow(difference(puzzle, goal, idx, 1, dimension), 2) + pow(difference(puzzle, goal, idx, 2, dimension), 2))
+            one = difference(puzzle3, goal, idx, 1, dimension)
+            two = difference(puzzle3, goal, idx, 2, dimension)
+            cost += math.sqrt(pow(one, 2) + pow(two, 2))
         return cost
 
-    else:
-        # Debug Statement #2c
-        print(
-            "Error [heuristic_three(puzzle, goal, dimension)]: Invalid dimension!")
-        return None
+    # else:
+    #     # Debug Statement #2c
+    #     print(
+    #         "Error [heuristic_three(puzzle, goal, dimension)]: Invalid dimension!")
+    #     return None
 
 # Row check helper function
-def check(puzzle, value):
-    rowcheck = []
+# def check(puzzle, value):
+#     rowcheck = []
 
-def generate_moves(puzzle, dimension):
-    moves = []
-    curr = puzzle
+def generate_moves(themoves, dimension):
+    generatedmoves = []
+    curr = themoves
     # Current position of blank tile
     # Debug Print #1
-    for idx in range(len(puzzle)):
-        print("row #" + str(idx) + ": " + str(puzzle[idx]))
+    for idx in range(len(themoves)):
+        print("row #" + str(idx) + ": " + str(themoves[idx]))
     
     #curr = puzzle.index(0)#identify(puzzle, 0)#search(puzzle, 0, dimension)
     #for idx in range(len(puzzle)):
@@ -330,8 +332,8 @@ def generate_moves(puzzle, dimension):
     #curr = list(zip(*np.where(puzzle == 0)))
     curr_x = 0
     curr_y = 0
-    for x in range(len(puzzle)):
-        for y in range (len(puzzle)):
+    for x in range(len(themoves)):
+        for y in range (len(themoves)):
             # If we have found the location of the blank tile
             if curr[x][y] == 0:
                 curr_x = x
@@ -342,7 +344,7 @@ def generate_moves(puzzle, dimension):
     #print(str(curr[curr_x][curr_y]))
     
     # If the puzzle is 4x4
-    if dimension == 4 or 3:
+    if dimension:
         # # If blank tile is not within left row
         # # if curr >= dimension:
         # if curr_x != 0:
@@ -352,35 +354,35 @@ def generate_moves(puzzle, dimension):
         #if curr < dimension * (dimension - 1):
         if curr_x != dimension - 1:
             # For direction, 0 = left, 1 = right, 2 = up, 3 = down
-            moves.append(move(puzzle, curr_x, curr_y, 0, dimension))
+            generatedmoves.append(move(themoves, curr_x, curr_y, 0, dimension))
             
         # If blank tile is not within right row, move right
         #if curr % dimension != dimension - 1:
         if curr_y != dimension - 1:
             #moves.append(puzzle[:curr] + [puzzle[curr + 1]] + puzzle[curr + 1:curr + dimension] + [0] + puzzle[curr + dimension + 1:])
-            moves.append(move(puzzle, curr_x, curr_y, 1, dimension))
+            generatedmoves.append(move(themoves, curr_x, curr_y, 1, dimension))
             
         # If blank tile is not within first row, move up
         #if curr >= dimension:
         if curr_x != 0:
             #moves.append(puzzle[:curr - dimension] + [0] + puzzle[curr - dimension + 1:curr] + [puzzle[curr - dimension]] + puzzle[curr + 1:])
-            moves.append(move(puzzle, curr_x, curr_y, 2, dimension))
+            generatedmoves.append(move(themoves, curr_x, curr_y, 2, dimension))
             
         # If blank tile is not within left row, move down
         #if curr % dimension != 0:
         if curr_y != 0:
             #moves.append(puzzle[:curr - 1] + [0] + puzzle[curr:curr + dimension - 1] + [puzzle[curr - 1]] + puzzle[curr + dimension:])
-            moves.append(move(puzzle, curr_x, curr_y, 3, dimension))
+            generatedmoves.append(move(themoves, curr_x, curr_y, 3, dimension))
     
-    else:
-        # Debug Statement #7
-        print("Error [generate_moves(puzzle, dimension)]: Invalid dimension!")
-        return None
+    # else:
+    #     # Debug Statement #7
+    #     print("Error [generate_moves(puzzle, dimension)]: Invalid dimension!")
+    #     return None
     # If the puzzle is 3x3
     #if dimension == 3:
         
             
-    return moves
+    return generatedmoves
     
     # # If the puzzle is 3x3
     # if dimension == 3:
@@ -394,7 +396,7 @@ def generate_moves(puzzle, dimension):
     #     if curr % dimension != (dimension - 1):
     #         moves.append(puzzle[:curr] + [puzzle[curr + 1]] + [0] + puzzle[curr + 2:])
     
-    return moves
+    #return moves
 
 # A* Search Implementation /w Three Different Heuristics
 # Input: Puzzle array, goal state, dimension of puzzle, the type of heuristic to use
@@ -428,8 +430,9 @@ def a_asterisksearch(puzzle, goal, dimension, type, max=9999):
             return navigate(prevstates, curr, costs)
     
         # List of moves
+        moves = []
         moves = generate_moves(curr, dimension)
-        
+        idx = []
         for idx in moves:
             if totalmoves >= max:
                 # Result Statement / Debug Statement #10
@@ -519,11 +522,11 @@ def a_asterisksearch(puzzle, goal, dimension, type, max=9999):
 # Best First Search Implementation /w Three Different Heuristics
 # Input: Puzzle array, goal state, dimension of puzzle, the type of heuristic to use
 # Output: List of moves, sorted by heuristic type & costs, if solution path found.
-def bestfirstsearch(puzzle, goal, dimension, type, max):
+def bestfirstsearch(givenpuzzle, goal, dimension, type, max):
     # Map of moves and of path(s) taken
     puzzlemap = []
     
-    hq.heappush(puzzlemap, (0, puzzle))
+    hq.heappush(puzzlemap, (0, givenpuzzle))
     
     # Empty list of explored states
     prevstates = {}
@@ -531,64 +534,72 @@ def bestfirstsearch(puzzle, goal, dimension, type, max):
     # Costs of each path compiled
     costs = {}
     
-    prevstates[str(puzzle)] = None
-    costs[str(puzzle)] = 0
+    prevstates[str(givenpuzzle)] = None
+    costs[str(givenpuzzle)] = 0
     
     initmap = []
-    hq.heappush(initmap, (0, puzzle))
+    hq.heappush(initmap, (0, givenpuzzle))
     init = hq.heappop(initmap)[1]
     costs[str(init)] = 0
     totalmoves = 0
     
     while puzzlemap:
+        curr = []
         curr = hq.heappop(puzzlemap)[1]
         
-        if curr == goal:
+        # Debug Statement:
+        print(str(curr))
+        print(str(goal))
+        
+        if str(curr) == str(goal):
             return navigate(prevstates, curr, costs)
     
         # List of moves
+        moves = []
         moves = generate_moves(curr, dimension)
-        
-        for idx in moves:
+        currentstate = []
+        for currentstate in moves:
             if totalmoves >= max:
                 # Result Statement / Debug Statement #9
-                print("Error [bestfirstsearch(puzzle, goal, dimension, type)]: Max number of moves reached!")
+                print("Error [bestfirstsearch(givenpuzzle, goal, dimension, type)]: Max number of moves reached!")
                 return None
+            priority = 0
             totalmoves += 1
             initmap = []
-            hq.heappush(initmap, (0, puzzle))
+            hq.heappush(initmap, (0, givenpuzzle))
             init = hq.heappop(initmap)[1]
             costs[str(init)] = 0
+            currcost = 0
             currcost = costs[str(curr)] + 1
             # Debug IDX Move Print
-            print("IDX: ", idx)
-            if str(idx) not in costs or currcost < costs[str(idx)]:
-                costs[str(idx)] = currcost
-                prevstates[str(idx)] = curr
+            print("currentstate: ", currentstate)
+            if str(currentstate) not in costs or currcost < costs[str(currentstate)]:
+                costs[str(currentstate)] = currcost
+                prevstates[str(currentstate)] = curr
                 
                 # Heuristic #1 - Number of Misplaced Tiles
                 if type == 1:
-                    priority = currcost + heuristic_one(idx, goal, dimension)
+                    priority = currcost + heuristic_one(currentstate, goal, dimension)
                     #hq.heappush(puzzlemap, ((heuristic_one(idx, goal, dimension) + currcost), idx))
                 
                 # Heuristic #2 - Manhattan / City-Block Distance
                 elif type == 2:
-                    priority = currcost + heuristic_two(idx, goal, dimension)
+                    priority = currcost + heuristic_two(currentstate, goal, dimension)
                     #hq.heappush(puzzlemap, ((heuristic_two(idx, goal, dimension) + currcost), idx))
                 
                 # Heuristic #3 - Sum of Euclidean Distances 
                 elif type == 3:
-                    priority = currcost + heuristic_three(idx, goal, dimension)
+                    priority = currcost + heuristic_three(currentstate, goal, dimension)
                     #hq.heappush(puzzlemap, ((heuristic_three(idx, goal, dimension) + currcost), idx))
                 
-                hq.heappush(puzzlemap, (priority, idx))
+                hq.heappush(puzzlemap, (priority, currentstate))
                 
                 # else:
                 #     # Debug Statement #6
                 #     print("Error [bestfirstsearch(puzzle, goal, dimension, type)]: Invalid type {of heuristic}!")
                 #     return None
                 
-                prevstates[str(idx)] = curr
+                prevstates[str(currentstate)] = curr
         # if idx >= max:
         #         # Result Statement / Debug Statement #8
         #         print("Error [a_asterisksearch(puzzle, goal, dimension, type)]: Max number of moves reached!")
@@ -645,137 +656,147 @@ def bestfirstsearch(puzzle, goal, dimension, type, max):
     #     print("Error [bestfirstsearch(puzzle, goal, dimension, type)]: Invalid type {of heuristic}!")
     #     return None
 
-def program(dimension):
+def program(dimension, max):
     if dimension == 3:
-        for idx in range(5):
+        for iteration1 in range(5):
             goal = [[1,2,3],[4,5,6],[7,8,0]]
             thepuzzle = []
-            thepuzzle = create8puzzle(idx)
-            print("The " + str(idx + 1) + " Iteration 8-puzzle is:")
-            for idx in range(3):
-                print(thepuzzle[idx])
+            thepuzzle = create8puzzle(iteration1)
+            print("The " + str(iteration1 + 1) + " Iteration 8-puzzle is:")
+            for iteration in range(3):
+                print(thepuzzle[iteration])
             
             print("The goal state of the 8-puzzle is:")
-            for idx in range(3):
-                print(goal[idx])
+            for iteration in range(3):
+                print(goal[iteration])
                         
             print(str(dimension) + "x" + str(dimension) + " Puzzle Best First & A* Searches: ")
             
+            thepuzzle = []
+            thepuzzle = create8puzzle(iteration1)
+            
             print("Best First Search using Heuristic #1 (Misplaced Tiles):")
-            bestresult1 = bestfirstsearch(thepuzzle, goal, dimension, 1, 9999)
+            # print("zzzzzzzz" + str(thepuzzle))
+            # print("zzzzzzzz" + str(goal))
+            bestresult1 = bestfirstsearch(thepuzzle, goal, dimension, 1, max)
             #print(bestresult1)
             results(bestresult1, 1, 1)
             
             thepuzzle = []
-            thepuzzle = create8puzzle(idx)
+            thepuzzle = create8puzzle(iteration1)
             
             print("Best First Search using Heuristic #2 (Manhattan Distance):")
-            bestresult2 = bestfirstsearch(thepuzzle, goal, dimension, 2, 9999)
+            bestresult2 = bestfirstsearch(thepuzzle, goal, dimension, 2, max)
             #print(bestresult2)
             results(bestresult2, 1, 2)
             # Debug Print
             #print("HEURISTIC COST TEST BEFORE #3")
             
             thepuzzle = []
-            thepuzzle = create8puzzle(idx)
+            thepuzzle = create8puzzle(iteration1)
             
             print("Best First Search using Heuristic #3 (Sum of Euclidean Distances):")
-            bestresult3 = bestfirstsearch(thepuzzle, goal, dimension, 3, 9999)
+            bestresult3 = bestfirstsearch(thepuzzle, goal, dimension, 3, max)
             #print(bestresult3)
             results(bestresult3, 1, 3)
             
             thepuzzle = []
-            thepuzzle = create8puzzle(idx)
+            thepuzzle = create8puzzle(iteration1)
             
             print("A* Search using Heuristic #1 (Misplaced Tiles):")
-            aresult1 = a_asterisksearch(thepuzzle, goal, dimension, 1, 9999)
+            aresult1 = a_asterisksearch(thepuzzle, goal, dimension, 1, max)
             #print(aresult1)
             results(aresult1, 2, 1)
             
             thepuzzle = []
-            thepuzzle = create8puzzle(idx)
+            thepuzzle = create8puzzle(iteration1)
             
             print("A* Search using Heuristic #2 (Manhattan Distance):")
-            aresult2 = a_asterisksearch(thepuzzle, goal, dimension, 2, 9999)
+            aresult2 = a_asterisksearch(thepuzzle, goal, dimension, 2, max)
             #print(aresult2)
             results(aresult2, 2, 2)
             
             thepuzzle = []
-            thepuzzle = create8puzzle(idx)
+            thepuzzle = create8puzzle(iteration1)
             
             print("A* Search using Heuristic #3 (Sum of Euclidean Distances):")
-            aresult3 = a_asterisksearch(thepuzzle, goal, dimension, 3, 9999)
+            aresult3 = a_asterisksearch(thepuzzle, goal, dimension, 3, max)
             #print(aresult3)
             results(aresult3, 2, 3)
             
-            thepuzzle = []
-            thepuzzle = create8puzzle(idx)
+            # thepuzzle = []
+            # thepuzzle = create8puzzle(iteration1)
     
     if dimension == 4:
-        for idx in range(5):
+        for iteration2 in range(5):
             goal = [[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,0]]
             thepuzzle = []
-            thepuzzle = create15puzzle(idx)
-            print("The " + str(idx + 1) + " Iteration 15-puzzle is:")
-            for idx in range(4):
-                print(thepuzzle[idx])
+            thepuzzle = create15puzzle(iteration2)
+            print("The " + str(iteration2 + 1) + " Iteration 15-puzzle is:")
+            for iteration in range(4):
+                print(thepuzzle[iteration])
             
             print("The goal state of the 15-puzzle is:")
-            for idx in range(4):
-                print(goal[idx])
+            for iteration in range(4):
+                print(goal[iteration])
                         
             print(str(dimension) + "x" + str(dimension) + " Puzzle Best First & A* Searches: ")
             
+            thepuzzle = []
+            thepuzzle = create15puzzle(iteration2)
+            
             print("Best First Search using Heuristic #1 (Misplaced Tiles):")
-            bestresult1 = bestfirstsearch(thepuzzle, goal, dimension, 1)
+            bestresult1 = bestfirstsearch(thepuzzle, goal, dimension, 1, max)
             #print(bestresult1)
             results(bestresult1, 1, 1)
             
             thepuzzle = []
-            thepuzzle = create15puzzle(idx)
+            thepuzzle = create15puzzle(iteration2)
             
             print("Best First Search using Heuristic #2 (Manhattan Distance):")
-            bestresult2 = bestfirstsearch(thepuzzle, goal, dimension, 2)
+            bestresult2 = bestfirstsearch(thepuzzle, goal, dimension, 2, max)
             #print(bestresult2)
             results(bestresult2, 1, 2)
             
             thepuzzle = []
-            thepuzzle = create15puzzle(idx)
+            thepuzzle = create15puzzle(iteration2)
             
             print("Best First Search using Heuristic #3 (Sum of Euclidean Distances):")
-            bestresult3 = bestfirstsearch(thepuzzle, goal, dimension, 3)
+            bestresult3 = bestfirstsearch(thepuzzle, goal, dimension, 3, max)
             #print(bestresult3)
             results(bestresult3, 1, 3)
             
             thepuzzle = []
-            thepuzzle = create15puzzle(idx)
+            thepuzzle = create15puzzle(iteration2)
             
             print("A* Search using Heuristic #1 (Misplaced Tiles):")
-            aresult1 = a_asterisksearch(thepuzzle, goal, dimension, 1)
+            aresult1 = a_asterisksearch(thepuzzle, goal, dimension, 1, max)
             #print(aresult1)
             results(aresult1, 2, 1)
             
             thepuzzle = []
-            thepuzzle = create15puzzle(idx)
+            thepuzzle = create15puzzle(iteration2)
             
             print("A* Search using Heuristic #2 (Manhattan Distance):")
-            aresult2 = a_asterisksearch(thepuzzle, goal, dimension, 2)
+            aresult2 = a_asterisksearch(thepuzzle, goal, dimension, 2, max)
             #print(aresult2)
             results(aresult2, 2, 2)
             
             thepuzzle = []
-            thepuzzle = create15puzzle(idx)
+            thepuzzle = create15puzzle(iteration2)
             
             print("A* Search using Heuristic #3 (Sum of Euclidean Distances):")
-            aresult3 = a_asterisksearch(thepuzzle, goal, dimension, 3)
+            aresult3 = a_asterisksearch(thepuzzle, goal, dimension, 3, max)
             #print(aresult3)
             results(aresult3, 2, 3)
             
             thepuzzle = []
-            thepuzzle = create15puzzle(idx)
+            thepuzzle = create15puzzle(iteration2)
 
 if __name__ == '__main__':
 
-    program(3)
-    program(4)
+    max = 9999
+
+    program(3, max)
+    program(4, max)
     
