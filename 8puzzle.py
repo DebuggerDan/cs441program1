@@ -322,8 +322,8 @@ def generate_moves(themoves, dimension):
     curr = themoves
     # Current position of blank tile
     # Debug Print #1
-    for idx in range(len(themoves)):
-        print("row #" + str(idx) + ": " + str(themoves[idx]))
+    #for idx in range(len(themoves)):
+    #    print("row #" + str(idx) + ": " + str(themoves[idx]))
     
     #curr = puzzle.index(0)#identify(puzzle, 0)#search(puzzle, 0, dimension)
     #for idx in range(len(puzzle)):
@@ -574,8 +574,8 @@ def bestfirstsearch(givenpuzzle, goal, dimension, type, max):
         curr = hq.heappop(puzzlemap)[1]
         
         # Debug Statement:
-        print(str(curr))
-        print(str(goal))
+        #print(str(curr))
+        #print(str(goal))
         
         if str(curr) == str(goal):
             return navigate(prevstates, curr, costs)
@@ -598,7 +598,7 @@ def bestfirstsearch(givenpuzzle, goal, dimension, type, max):
             currcost = 0
             currcost = costs[str(curr)] + 1
             # Debug IDX Move Print
-            print("currentstate: ", currentstate)
+            #print("currentstate: ", currentstate)
             if str(currentstate) not in costs or currcost < costs[str(currentstate)]:
                 costs[str(currentstate)] = currcost
                 prevstates[str(currentstate)] = curr
@@ -759,13 +759,13 @@ def program(dimension, max):
             goal = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0]
             thepuzzle = []
             thepuzzle = create15puzzle(iteration2)
-            print("The " + str(iteration1 + 1) + " Iteration 15-puzzle is:")
+            print("The " + str(iteration2 + 1) + " Iteration 15-puzzle is:")
             for iteration in range(4):
-                print(thepuzzle[iteration], thepuzzle[iteration+1], thepuzzle[iteration+2])
+                print(thepuzzle[iteration], thepuzzle[iteration+1], thepuzzle[iteration+2], thepuzzle[iteration+3])
             
             print("The goal state of the 15-puzzle is:")
             for iteration in range(4):
-                print(goal[iteration], goal[iteration+1], goal[iteration+2])
+                print(goal[iteration], goal[iteration+1], goal[iteration+2], goal[iteration+3])
                         
             print(str(dimension) + "x" + str(dimension) + " Puzzle Best First & A* Searches: ")
             
