@@ -682,8 +682,148 @@ def bestfirstsearch(givenpuzzle, goal, dimension, type, max):
     #     print("Error [bestfirstsearch(puzzle, goal, dimension, type)]: Invalid type {of heuristic}!")
     #     return None
 
+def calculations(bestpathlist1, bestpathlist2, bestpathlist3, apathlist1, apathlist2, apathlist3, beststepslist1, beststepslist2, beststepslist3, astepslist1, astepslist2, astepslist3, max, dimension):
+    print("")
+    print("----------")
+    print("")
+    print("Calculations & Data Analysis for " + str(dimension) + "x" + str(dimension) + " puzzle (Max: " + str(max) + " moves):")
+    print("A. Best-first search:")
+    
+    print("Best-first search - Heuristic #1 (Misplaced Tiles):")
+    for idx in range(5):
+        if bestpathlist1[idx] is None:
+            print("Solution Path #" + str(idx + 1) + "No Solution Found.")
+        else:
+            print("Solution Path #" + str(idx + 1) + ": " + str(bestpathlist1[idx]))
+    
+    avg = 0
+    
+    for idx in range(5):
+        if beststepslist1[idx] is None:
+            avg += max
+        else:
+            avg += beststepslist1[idx]
+    
+    avg = avg/5
+    print("Best-first search - Heuristic #1 (Misplaced Tiles) Average Steps: " + str(avg))
+    print("")
+    
+    print("Best-first search - Heuristic #2 (Manhattan / City-Block Distance):")
+    for idx in range(5):
+        if bestpathlist2[idx] is None:
+            print("Solution Path #" + str(idx + 1) + "No Solution Found.")
+        else:
+            print("Solution Path #" + str(idx + 1) + ": " + str(bestpathlist2[idx]))
+        
+    avg = 0
+    
+    for idx in range(5):
+        if beststepslist2[idx] is None:
+            avg += max
+        else:
+            avg += beststepslist2[idx]
+    
+    avg = avg/5
+    print("Best-first search - Heuristic #2 (Manhattan / City-Block Distance) Average Steps: " + str(avg))
+    print("")
+    
+    print("Best-first search - Heuristic #3 (Sum of Euclidean Distances):")
+    for idx in range(5):
+        if bestpathlist3[idx] is None:
+            print("Solution Path #" + str(idx + 1) + "No Solution Found.")
+        else:
+            print("Solution Path #" + str(idx + 1) + ": " + str(bestpathlist3[idx]))
+   
+    avg = 0
+    
+    for idx in range(5):
+        if beststepslist3[idx] is None:
+            avg += max
+        else:
+            avg += beststepslist3[idx]
+    
+    avg = avg/5
+    print("Best-first search - Heuristic #3 (Sum of Euclidean Distances) Average Steps: " + str(avg))
+    print("")
+    
+    print("B. A* search:")
+    
+    print("A* search - Heuristic #1 (Misplaced Tiles):")
+    for idx in range(5):
+        if apathlist1[idx] is None:
+            print("Solution Path #" + str(idx + 1) + "No Solution Found.")
+        else:
+            print("Solution Path #" + str(idx + 1) + ": " + str(apathlist1[idx]))
+    
+    avg = 0
+    
+    for idx in range(5):
+        if astepslist1[idx] is None:
+            avg += max
+        else:
+            avg += astepslist1[idx]
+    
+    avg = avg/5
+    print("A* search - Heuristic #1 (Misplaced Tiles) Average Steps: " + str(avg))
+    print("")
+    
+    print("A* search - Heuristic #2 (Manhattan / City-Block Distance):")
+    for idx in range(5):
+        if apathlist2[idx] is None:
+            print("Solution Path #" + str(idx + 1) + "No Solution Found.")
+        else:
+            print("Solution Path #" + str(idx + 1) + ": " + str(apathlist2[idx]))
+        
+    avg = 0
+    
+    for idx in range(5):
+        if astepslist2[idx] is None:
+            avg += max
+        else:
+            avg += astepslist2[idx]
+    
+    avg = avg/5
+    print("A* search - Heuristic #2 (Manhattan / City-Block Distance) Average Steps: " + str(avg))
+    print("")
+    
+    print("A* search - Heuristic #3 (Sum of Euclidean Distances):")
+    for idx in range(5):
+        if apathlist3[idx] is None:
+            print("Solution Path #" + str(idx + 1) + "No Solution Found.")
+        else:
+            print("Solution Path #" + str(idx + 1) + ": " + str(apathlist3[idx]))
+   
+    avg = 0
+    
+    for idx in range(5):
+        if astepslist3[idx] is None:
+            avg += max
+        else:
+            avg += astepslist3[idx]
+    
+    avg = avg/5
+    print("A* search - Heuristic #3 (Sum of Euclidean Distances) Average Steps: " + str(avg))
+    print("")
+    
 def program(dimension, max):
+    bestpathlist1 = []
+    bestpathlist2 = []
+    bestpathlist3 = []
+    
+    beststepslist1 = []
+    beststepslist2 = []
+    beststepslist3 = []
+    
+    apathlist1 = []
+    apathlist2 = []
+    apathlist3 = []
+    
+    astepslist1 = []
+    astepslist2 = []
+    astepslist3 = []
+    
     if dimension == 3:
+
         for iteration1 in range(5):
             #goal = [[1,2,3],[4,5,6],[7,8,0]]
             goal = [1, 2, 3, 4, 5, 6, 7, 8, 0]
@@ -707,7 +847,9 @@ def program(dimension, max):
             # print("zzzzzzzz" + str(goal))
             bestresult1 = bestfirstsearch(thepuzzle, goal, dimension, 1, max)
             #print(bestresult1)
-            results(bestresult1, 1, 1)
+            
+            bestpathlist1.append(bestresult1)
+            beststepslist1.append(results(bestresult1, 1, 1))
             
             thepuzzle = []
             thepuzzle = create8puzzle(iteration1)
@@ -715,7 +857,10 @@ def program(dimension, max):
             print("Best First Search using Heuristic #2 (Manhattan Distance):")
             bestresult2 = bestfirstsearch(thepuzzle, goal, dimension, 2, max)
             #print(bestresult2)
-            results(bestresult2, 1, 2)
+            
+            bestpathlist2.append(bestresult2)
+            beststepslist2.append(results(bestresult2, 1, 2))
+            
             # Debug Print
             #print("HEURISTIC COST TEST BEFORE #3")
             
@@ -725,7 +870,9 @@ def program(dimension, max):
             print("Best First Search using Heuristic #3 (Sum of Euclidean Distances):")
             bestresult3 = bestfirstsearch(thepuzzle, goal, dimension, 3, max)
             #print(bestresult3)
-            results(bestresult3, 1, 3)
+            
+            bestpathlist3.append(bestresult3)
+            beststepslist3.append(results(bestresult3, 1, 3))
             
             thepuzzle = []
             thepuzzle = create8puzzle(iteration1)
@@ -733,7 +880,9 @@ def program(dimension, max):
             print("A* Search using Heuristic #1 (Misplaced Tiles):")
             aresult1 = a_asterisksearch(thepuzzle, goal, dimension, 1, max)
             #print(aresult1)
-            results(aresult1, 2, 1)
+            
+            apathlist1.append(aresult1)
+            astepslist1.append(results(aresult1, 2, 1))
             
             thepuzzle = []
             thepuzzle = create8puzzle(iteration1)
@@ -741,7 +890,9 @@ def program(dimension, max):
             print("A* Search using Heuristic #2 (Manhattan Distance):")
             aresult2 = a_asterisksearch(thepuzzle, goal, dimension, 2, max)
             #print(aresult2)
-            results(aresult2, 2, 2)
+            
+            apathlist2.append(aresult2)
+            astepslist2.append(results(aresult2, 2, 2))
             
             thepuzzle = []
             thepuzzle = create8puzzle(iteration1)
@@ -749,7 +900,9 @@ def program(dimension, max):
             print("A* Search using Heuristic #3 (Sum of Euclidean Distances):")
             aresult3 = a_asterisksearch(thepuzzle, goal, dimension, 3, max)
             #print(aresult3)
-            results(aresult3, 2, 3)
+            
+            apathlist3.append(aresult3)
+            astepslist3.append(results(aresult3, 2, 3))
             
             # thepuzzle = []
             # thepuzzle = create8puzzle(iteration1)
@@ -773,9 +926,13 @@ def program(dimension, max):
             thepuzzle = create15puzzle(iteration2)
             
             print("Best First Search using Heuristic #1 (Misplaced Tiles):")
+            # print("zzzzzzzz" + str(thepuzzle))
+            # print("zzzzzzzz" + str(goal))
             bestresult1 = bestfirstsearch(thepuzzle, goal, dimension, 1, max)
             #print(bestresult1)
-            results(bestresult1, 1, 1)
+            
+            bestpathlist1.append(bestresult1)
+            beststepslist1.append(results(bestresult1, 1, 1))
             
             thepuzzle = []
             thepuzzle = create15puzzle(iteration2)
@@ -783,7 +940,12 @@ def program(dimension, max):
             print("Best First Search using Heuristic #2 (Manhattan Distance):")
             bestresult2 = bestfirstsearch(thepuzzle, goal, dimension, 2, max)
             #print(bestresult2)
-            results(bestresult2, 1, 2)
+            
+            bestpathlist2.append(bestresult2)
+            beststepslist2.append(results(bestresult2, 1, 2))
+            
+            # Debug Print
+            #print("HEURISTIC COST TEST BEFORE #3")
             
             thepuzzle = []
             thepuzzle = create15puzzle(iteration2)
@@ -791,7 +953,9 @@ def program(dimension, max):
             print("Best First Search using Heuristic #3 (Sum of Euclidean Distances):")
             bestresult3 = bestfirstsearch(thepuzzle, goal, dimension, 3, max)
             #print(bestresult3)
-            results(bestresult3, 1, 3)
+            
+            bestpathlist3.append(bestresult3)
+            beststepslist3.append(results(bestresult3, 1, 3))
             
             thepuzzle = []
             thepuzzle = create15puzzle(iteration2)
@@ -799,7 +963,9 @@ def program(dimension, max):
             print("A* Search using Heuristic #1 (Misplaced Tiles):")
             aresult1 = a_asterisksearch(thepuzzle, goal, dimension, 1, max)
             #print(aresult1)
-            results(aresult1, 2, 1)
+            
+            apathlist1.append(aresult1)
+            astepslist1.append(results(aresult1, 2, 1))
             
             thepuzzle = []
             thepuzzle = create15puzzle(iteration2)
@@ -807,7 +973,9 @@ def program(dimension, max):
             print("A* Search using Heuristic #2 (Manhattan Distance):")
             aresult2 = a_asterisksearch(thepuzzle, goal, dimension, 2, max)
             #print(aresult2)
-            results(aresult2, 2, 2)
+            
+            apathlist2.append(aresult2)
+            astepslist2.append(results(aresult2, 2, 2))
             
             thepuzzle = []
             thepuzzle = create15puzzle(iteration2)
@@ -815,15 +983,19 @@ def program(dimension, max):
             print("A* Search using Heuristic #3 (Sum of Euclidean Distances):")
             aresult3 = a_asterisksearch(thepuzzle, goal, dimension, 3, max)
             #print(aresult3)
-            results(aresult3, 2, 3)
             
-            thepuzzle = []
-            thepuzzle = create15puzzle(iteration2)
+            apathlist3.append(aresult3)
+            astepslist3.append(results(aresult3, 2, 3))
+            
+            # thepuzzle = []
+            # thepuzzle = create15puzzle(iteration2)
+
+    return (bestpathlist1, bestpathlist2, bestpathlist3, apathlist1, apathlist2, apathlist3, beststepslist1, beststepslist2, beststepslist3, astepslist1, astepslist2, astepslist3, max, dimension)
 
 if __name__ == '__main__':
 
     max = 9999
 
-    program(3, max)
-    program(4, max)
+    calculations(*program(3, max))
+    calculations(*program(4, max))
     
