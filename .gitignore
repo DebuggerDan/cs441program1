@@ -348,3 +348,8 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+8puzzle_test.py
+test.py
+test1.py
+test2.py
+test3.py
