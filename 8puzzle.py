@@ -2,24 +2,24 @@
 ### Implementing a 3-by-3, 8-puzzle solver using best-first search & three A* heuristics
 
 # import random
-import numpy as np
+#import numpy as np
 import math
 import heapq as hq
 
 def create8puzzle(idx):
     # The 3x3 8-puzzle goal
-    
+    puzzle = []
     # Create a random 8-puzzle where the blank tile is in a random position, as 'b'
     if idx == 0:
         puzzle = [5,1,0,7,8,6,2,4,3]
     elif idx == 1:
-        puzzle = [4,5,0,6,1,8,7,3,2]
+        puzzle = [4,5,2,6,1,8,7,3,0]
     elif idx == 2:
-        puzzle = [2,8,4,5,1,0,7,3,6]
+        puzzle = [2,0,4,5,1,8,7,3,6]
     elif idx == 3:
-        puzzle = [7,5,1,0,8,3,4,6,2]
+        puzzle = [7,0,1,5,8,3,4,6,2]
     elif idx == 4:
-        puzzle = [3,8,4,6,7,0,1,5,2]
+        puzzle = [3,8,5,6,7,4,1,0,2]
     # initpuzzle = []
     # puzzle = []
     # idx = 0
@@ -38,18 +38,18 @@ def create8puzzle(idx):
 
 def create15puzzle(idx):
     # The 4x4 15-puzzle goal
-    
+    puzzle = []
     # Create a random 8-puzzle where the blank tile is in a random position, as 'b'
     if idx == 0:
         puzzle = [8,4,0,13,15,3,14,10,2,12,11,6,7,1,9,5]
     elif idx == 1:
-        puzzle = [5,9,7,15,0,2,10,8,14,11,6,4,13,3,1,12]
+        puzzle = [5,9,7,15,1,2,10,8,14,11,6,4,13,3,0,12]
     elif idx == 2:
-        puzzle = [2,12,13,9,11,1,7,8,0,10,14,6,15,5,3,4]
+        puzzle = [2,12,0,9,11,1,7,8,13,10,14,6,15,5,3,4]
     elif idx == 3:
-        puzzle = [8,14,2,15,12,13,5,1,4,9,6,0,3,10,7,11]
+        puzzle = [8,14,2,15,12,13,5,1,4,9,6,7,3,10,0,11]
     elif idx == 4:
-        puzzle = [10,5,8,6,3,12,14,7,9,15,0,2,4,11,13,1]
+        puzzle = [10,5,13,6,3,12,14,7,9,15,8,2,4,11,0,1]
         
     # initpuzzle = []
     # puzzle = []
@@ -472,7 +472,8 @@ def a_asterisksearch(puzzle, goal, dimension, type, max=9999):
             init = hq.heappop(initmap)[1]
             costs[str(init)] = 0
             currcost = costs[str(curr)] + 1
-            if str(idx) not in costs or currcost < costs[str(idx)]:
+            #if str(idx) not in costs or currcost < costs[str(idx)]:
+            if str(idx) not in costs:
                 costs[str(idx)] = currcost
                 prevstates[str(idx)] = curr
                 
@@ -601,23 +602,26 @@ def bestfirstsearch(givenpuzzle, goal, dimension, type, max):
             currcost = costs[str(curr)] + 1
             # Debug IDX Move Print
             #print("currentstate: ", currentstate)
-            if str(currentstate) not in costs or currcost < costs[str(currentstate)]:
+            #if str(currentstate) not in costs or currcost < costs[str(currentstate)]:
+            
+            # Best-first Search
+            if str(currentstate) not in costs:
                 costs[str(currentstate)] = currcost
                 prevstates[str(currentstate)] = curr
                 
                 # Heuristic #1 - Number of Misplaced Tiles
                 if type == 1:
-                    priority = currcost + heuristic_one(currentstate, goal, dimension)
+                    priority = heuristic_one(currentstate, goal, dimension)
                     #hq.heappush(puzzlemap, ((heuristic_one(idx, goal, dimension) + currcost), idx))
                 
                 # Heuristic #2 - Manhattan / City-Block Distance
                 elif type == 2:
-                    priority = currcost + heuristic_two(currentstate, goal, dimension)
+                    priority = heuristic_two(currentstate, goal, dimension)
                     #hq.heappush(puzzlemap, ((heuristic_two(idx, goal, dimension) + currcost), idx))
                 
                 # Heuristic #3 - Sum of Euclidean Distances 
                 elif type == 3:
-                    priority = currcost + heuristic_three(currentstate, goal, dimension)
+                    priority = heuristic_three(currentstate, goal, dimension)
                     #hq.heappush(puzzlemap, ((heuristic_three(idx, goal, dimension) + currcost), idx))
                 
                 hq.heappush(puzzlemap, (priority, currentstate))
@@ -690,122 +694,147 @@ def calculations(bestpathlist1, bestpathlist2, bestpathlist3, apathlist1, apathl
     print("")
     print("Calculations & Data Analysis for " + str(dimension) + "x" + str(dimension) + " puzzle (Max: " + str(max) + " moves):")
     print("A. Best-first search:")
-    
+    empties = 0
     print("Best-first search - Heuristic #1 (Misplaced Tiles):")
     for idx in range(5):
         if bestpathlist1[idx] is None:
             print("Solution Path #" + str(idx + 1) + ": No Solution Found.")
-        else:
-            print("Solution Path #" + str(idx + 1) + ": " + str(bestpathlist1[idx]))
+        #else:
+            #print("Solution Path #" + str(idx + 1) + ": " + str(bestpathlist1[idx]))
     
     avg = 0
     
     for idx in range(5):
         if beststepslist1[idx] is None:
             avg += max
+            empties += 1
         else:
             avg += beststepslist1[idx]
-    
+    preavg = avg
     avg = avg/5
     print("Best-first search - Heuristic #1 (Misplaced Tiles) Average Steps: " + str(avg))
+    if empties != 0 and empties != 5:
+        print("However, there were " + str(empties) + " empty solution paths.")
+        print("Therefore, the average steps for correct solutions is " + str((preavg-(empties*max))/(5-empties)))
     print("")
-    
+    empties = 0
     print("Best-first search - Heuristic #2 (Manhattan / City-Block Distance):")
     for idx in range(5):
         if bestpathlist2[idx] is None:
             print("Solution Path #" + str(idx + 1) + ": No Solution Found.")
-        else:
-            print("Solution Path #" + str(idx + 1) + ": " + str(bestpathlist2[idx]))
+        #else:
+            #print("Solution Path #" + str(idx + 1) + ": " + str(bestpathlist2[idx]))
         
     avg = 0
     
     for idx in range(5):
         if beststepslist2[idx] is None:
             avg += max
+            empties += 1
         else:
             avg += beststepslist2[idx]
-    
+    preavg = avg
     avg = avg/5
     print("Best-first search - Heuristic #2 (Manhattan / City-Block Distance) Average Steps: " + str(avg))
+    if empties != 0 and empties != 5:
+        print("However, there were " + str(empties) + " empty solution paths.")
+        print("Therefore, the average steps for correct solutions is " + str((preavg-(empties*max))/(5-empties)))
     print("")
-    
+    empties = 0
     print("Best-first search - Heuristic #3 (Sum of Euclidean Distances):")
     for idx in range(5):
         if bestpathlist3[idx] is None:
             print("Solution Path #" + str(idx + 1) + ": No Solution Found.")
-        else:
-            print("Solution Path #" + str(idx + 1) + ": " + str(bestpathlist3[idx]))
+        #else:
+            #print("Solution Path #" + str(idx + 1) + ": " + str(bestpathlist3[idx]))
    
     avg = 0
     
     for idx in range(5):
         if beststepslist3[idx] is None:
             avg += max
+            empties += 1
         else:
             avg += beststepslist3[idx]
-    
+    preavg = avg
     avg = avg/5
     print("Best-first search - Heuristic #3 (Sum of Euclidean Distances) Average Steps: " + str(avg))
+    if empties != 0 and empties != 5:
+        print("However, there were " + str(empties) + " empty solution paths.")
+        print("Therefore, the average steps for correct solutions is " + str((preavg-(empties*max))/(5-empties)))
     print("")
-    
+    empties = 0
     print("B. A* search:")
     
     print("A* search - Heuristic #1 (Misplaced Tiles):")
     for idx in range(5):
         if apathlist1[idx] is None:
             print("Solution Path #" + str(idx + 1) + ": No Solution Found.")
-        else:
-            print("Solution Path #" + str(idx + 1) + ": " + str(apathlist1[idx]))
+        #else:
+            #print("Solution Path #" + str(idx + 1) + ": " + str(apathlist1[idx]))
     
     avg = 0
     
     for idx in range(5):
         if astepslist1[idx] is None:
             avg += max
+            empties += 1
         else:
             avg += astepslist1[idx]
-    
+    preavg = avg
     avg = avg/5
     print("A* search - Heuristic #1 (Misplaced Tiles) Average Steps: " + str(avg))
+    if empties != 0 and empties != 5:
+        print("However, there were " + str(empties) + " empty solution paths.")
+        print("Therefore, the average steps for correct solutions is " + str((preavg-(empties*max))/(5-empties)))
     print("")
-    
+    empties = 0
     print("A* search - Heuristic #2 (Manhattan / City-Block Distance):")
     for idx in range(5):
         if apathlist2[idx] is None:
             print("Solution Path #" + str(idx + 1) + ": No Solution Found.")
-        else:
-            print("Solution Path #" + str(idx + 1) + ": " + str(apathlist2[idx]))
+        #else:
+            #print("Solution Path #" + str(idx + 1) + ": " + str(apathlist2[idx]))
         
     avg = 0
     
     for idx in range(5):
         if astepslist2[idx] is None:
             avg += max
+            empties += 1
         else:
             avg += astepslist2[idx]
-    
+    preavg = avg
     avg = avg/5
     print("A* search - Heuristic #2 (Manhattan / City-Block Distance) Average Steps: " + str(avg))
+    if empties != 0 and empties != 5:
+        print("However, there were " + str(empties) + " empty solution paths.")
+        print("Therefore, the average steps for correct solutions is " + str((preavg-(empties*max))/(5-empties)))
     print("")
-    
+    empties = 0
     print("A* search - Heuristic #3 (Sum of Euclidean Distances):")
     for idx in range(5):
         if apathlist3[idx] is None:
             print("Solution Path #" + str(idx + 1) + ": No Solution Found.")
-        else:
-            print("Solution Path #" + str(idx + 1) + ": " + str(apathlist3[idx]))
+        #else:
+            #print("Solution Path #" + str(idx + 1) + ": " + str(apathlist3[idx]))
    
     avg = 0
     
     for idx in range(5):
         if astepslist3[idx] is None:
             avg += max
+            empties += 1
         else:
             avg += astepslist3[idx]
-    
+    preavg = avg
     avg = avg/5
     print("A* search - Heuristic #3 (Sum of Euclidean Distances) Average Steps: " + str(avg))
+    if empties != 0 and empties != 5:
+        print("However, there were " + str(empties) + " empty solution paths.")
+        print("Therefore, the average steps for correct solutions is " + str((preavg-(empties*max))/(5-empties)))
     print("")
+    empties = 0
     
 def program(dimension, max):
     bestpathlist1 = []
@@ -832,12 +861,16 @@ def program(dimension, max):
             thepuzzle = []
             thepuzzle = create8puzzle(iteration1)
             print("The " + str(iteration1 + 1) + " Iteration 8-puzzle is:")
-            for iteration in range(3):
-                print(thepuzzle[iteration], thepuzzle[iteration+1], thepuzzle[iteration+2])
-            
+            numpos = 0
+            print(thepuzzle[numpos], thepuzzle[numpos+1], thepuzzle[numpos+2])
+            print(thepuzzle[numpos+3], thepuzzle[numpos+4], thepuzzle[numpos+5])
+            print(thepuzzle[numpos+6], thepuzzle[numpos+7], thepuzzle[numpos+8])
+ 
             print("The goal state of the 8-puzzle is:")
-            for iteration in range(3):
-                print(goal[iteration], goal[iteration+1], goal[iteration+2])
+            numpos = 0
+            print(goal[numpos], goal[numpos+1], goal[numpos+2])
+            print(goal[numpos+3], goal[numpos+4], goal[numpos+5])
+            print(goal[numpos+6], goal[numpos+7], goal[numpos+8])
                         
             print("The " + str(iteration1 + 1) + " Iteration " + str(dimension) + "x" + str(dimension) + " Puzzle Best First & A* Searches: ")
             
@@ -915,13 +948,24 @@ def program(dimension, max):
             thepuzzle = []
             thepuzzle = create15puzzle(iteration2)
             print("The " + str(iteration2 + 1) + " Iteration 15-puzzle is:")
-            for iteration in range(4):
-                print(thepuzzle[iteration], thepuzzle[iteration+1], thepuzzle[iteration+2], thepuzzle[iteration+3])
+            numpos = 0
+            # for iteration in range(4):
+            #     print(thepuzzle[iteration], thepuzzle[iteration+1], thepuzzle[iteration+2], thepuzzle[iteration+3])
+            
+            # print("The goal state of the 15-puzzle is:")
+            # for iteration in range(4):
+            #     print(goal[iteration], goal[iteration+1], goal[iteration+2], goal[iteration+3])
+            print(thepuzzle[numpos], thepuzzle[numpos+1], thepuzzle[numpos+2], thepuzzle[numpos+3])
+            print(thepuzzle[numpos+4], thepuzzle[numpos+5], thepuzzle[numpos+6], thepuzzle[numpos+7])
+            print(thepuzzle[numpos+8], thepuzzle[numpos+9], thepuzzle[numpos+10], thepuzzle[numpos+11])
+            print(thepuzzle[numpos+12], thepuzzle[numpos+13], thepuzzle[numpos+14], thepuzzle[numpos+15])
             
             print("The goal state of the 15-puzzle is:")
-            for iteration in range(4):
-                print(goal[iteration], goal[iteration+1], goal[iteration+2], goal[iteration+3])
-                        
+            print(goal[numpos], goal[numpos+1], goal[numpos+2], goal[numpos+3])
+            print(goal[numpos+4], goal[numpos+5], goal[numpos+6], goal[numpos+7])
+            print(goal[numpos+8], goal[numpos+9], goal[numpos+10], goal[numpos+11])
+            print(goal[numpos+12], goal[numpos+13], goal[numpos+14], goal[numpos+15])
+            
             print("The " + str(iteration2 + 1) + " Iteration " + str(dimension) + "x" + str(dimension) + " Puzzle Best First & A* Searches: ")
             
             thepuzzle = []
@@ -996,8 +1040,12 @@ def program(dimension, max):
 
 if __name__ == '__main__':
 
-    max = 99999
+    max1 = 1000
+    max2 = 2500
 
-    calculations(*program(3, max))
-    calculations(*program(4, max))
+    set1 = program(3, max1)
+    set2 = program(4, max2)
+    
+    calculations(*set1)
+    calculations(*set2)
     
