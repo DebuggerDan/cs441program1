@@ -12,13 +12,13 @@ def create8puzzle(idx):
     # Create a random 8-puzzle where the blank tile is in a random position, as 'b'
     if idx == 0:
         puzzle = [5,1,0,7,8,6,2,4,3]
-    if idx == 1:
+    elif idx == 1:
         puzzle = [4,5,0,6,1,8,7,3,2]
-    if idx == 2:
+    elif idx == 2:
         puzzle = [2,8,4,5,1,0,7,3,6]
-    if idx == 3:
+    elif idx == 3:
         puzzle = [7,5,1,0,8,3,4,6,2]
-    if idx == 4:
+    elif idx == 4:
         puzzle = [3,8,4,6,7,0,1,5,2]
     # initpuzzle = []
     # puzzle = []
@@ -42,13 +42,13 @@ def create15puzzle(idx):
     # Create a random 8-puzzle where the blank tile is in a random position, as 'b'
     if idx == 0:
         puzzle = [8,4,0,13,15,3,14,10,2,12,11,6,7,1,9,5]
-    if idx == 1:
+    elif idx == 1:
         puzzle = [5,9,7,15,0,2,10,8,14,11,6,4,13,3,1,12]
-    if idx == 2:
+    elif idx == 2:
         puzzle = [2,12,13,9,11,1,7,8,0,10,14,6,15,5,3,4]
-    if idx == 3:
+    elif idx == 3:
         puzzle = [8,14,2,15,12,13,5,1,4,9,6,0,3,10,7,11]
-    if idx == 4:
+    elif idx == 4:
         puzzle = [10,5,8,6,3,12,14,7,9,15,0,2,4,11,13,1]
         
     # initpuzzle = []
