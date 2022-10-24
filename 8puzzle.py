@@ -19,7 +19,9 @@ def create8puzzle(idx):
     elif idx == 3:
         puzzle = [7,0,1,5,8,3,4,6,2]
     elif idx == 4:
-        puzzle = [3,8,5,6,7,4,1,0,2]
+        puzzle = [7,0,3,5,8,1,4,6,2]
+    elif idx == 5:
+        puzzle = [2,0,4,5,1,8,7,3,6]
     # initpuzzle = []
     # puzzle = []
     # idx = 0
@@ -41,7 +43,7 @@ def create15puzzle(idx):
     puzzle = []
     # Create a random 8-puzzle where the blank tile is in a random position, as 'b'
     if idx == 0:
-        puzzle = [8,4,0,13,15,3,14,10,2,12,11,6,7,1,9,5]
+        puzzle = [0,4,8,13,15,3,14,10,2,12,11,6,7,1,9,5]
     elif idx == 1:
         puzzle = [5,9,7,15,1,2,10,8,14,11,6,4,13,3,0,12]
     elif idx == 2:
@@ -49,8 +51,9 @@ def create15puzzle(idx):
     elif idx == 3:
         puzzle = [8,14,2,15,12,13,5,1,4,9,6,7,3,10,0,11]
     elif idx == 4:
-        puzzle = [10,5,13,6,3,12,14,7,9,15,8,2,4,11,0,1]
-        
+        puzzle = [0,5,8,13,15,3,14,10,2,12,11,6,7,1,9,4]
+    elif idx == 5:
+        puzzle = [3,12,0,9,11,1,7,8,13,10,14,6,15,5,2,4]
     # initpuzzle = []
     # puzzle = []
     # idx = 0
@@ -291,23 +294,23 @@ def heuristic_two(puzzle2, goal, dimension):
 
 def heuristic_three(puzzle3, goal, dimension):
     # Initalize heuristic #3 (cost) value to 0
-    cost = 0
+    cost3 = 0
 
     # For the 3x3 8-puzzle
     if dimension == 3:
         for idx in range(1, 9):
             one = difference(puzzle3, goal, idx, 1, dimension)
             two = difference(puzzle3, goal, idx, 2, dimension)
-            cost += math.sqrt(pow(one, 2) + pow(two, 2))
-        return cost
+            cost3 += math.sqrt(pow(one, 2) + pow(two, 2))
+        return cost3
 
     # For the 4x4 15-puzzle extra credit
     if dimension == 4:
         for idx in range(1, 15):
             one = difference(puzzle3, goal, idx, 1, dimension)
             two = difference(puzzle3, goal, idx, 2, dimension)
-            cost += math.sqrt(pow(one, 2) + pow(two, 2))
-        return cost
+            cost3 += math.sqrt(pow(one, 2) + pow(two, 2))
+        return cost3
 
     # else:
     #     # Debug Statement #2c
@@ -430,7 +433,7 @@ def generate_moves(themoves, dimension):
 # Input: Puzzle array, goal state, dimension of puzzle, the type of heuristic to use
 # Output: List of moves, sorted by heuristic type & costs, if solution path found.
 
-def a_asterisksearch(puzzle, goal, dimension, type, max=9999):
+def a_asterisksearch(puzzle, goal, dimension, type, max):
     # Map of moves and of path(s) taken
     puzzlemap = []
     
@@ -699,8 +702,8 @@ def calculations(bestpathlist1, bestpathlist2, bestpathlist3, apathlist1, apathl
     for idx in range(5):
         if bestpathlist1[idx] is None:
             print("Solution Path #" + str(idx + 1) + ": No Solution Found.")
-        #else:
-            #print("Solution Path #" + str(idx + 1) + ": " + str(bestpathlist1[idx]))
+        else:
+            print("Solution Path #" + str(idx + 1) + ": " + str(bestpathlist1[idx]))
     
     avg = 0
     
@@ -722,8 +725,8 @@ def calculations(bestpathlist1, bestpathlist2, bestpathlist3, apathlist1, apathl
     for idx in range(5):
         if bestpathlist2[idx] is None:
             print("Solution Path #" + str(idx + 1) + ": No Solution Found.")
-        #else:
-            #print("Solution Path #" + str(idx + 1) + ": " + str(bestpathlist2[idx]))
+        else:
+            print("Solution Path #" + str(idx + 1) + ": " + str(bestpathlist2[idx]))
         
     avg = 0
     
@@ -745,8 +748,8 @@ def calculations(bestpathlist1, bestpathlist2, bestpathlist3, apathlist1, apathl
     for idx in range(5):
         if bestpathlist3[idx] is None:
             print("Solution Path #" + str(idx + 1) + ": No Solution Found.")
-        #else:
-            #print("Solution Path #" + str(idx + 1) + ": " + str(bestpathlist3[idx]))
+        else:
+            print("Solution Path #" + str(idx + 1) + ": " + str(bestpathlist3[idx]))
    
     avg = 0
     
@@ -770,8 +773,8 @@ def calculations(bestpathlist1, bestpathlist2, bestpathlist3, apathlist1, apathl
     for idx in range(5):
         if apathlist1[idx] is None:
             print("Solution Path #" + str(idx + 1) + ": No Solution Found.")
-        #else:
-            #print("Solution Path #" + str(idx + 1) + ": " + str(apathlist1[idx]))
+        else:
+            print("Solution Path #" + str(idx + 1) + ": " + str(apathlist1[idx]))
     
     avg = 0
     
@@ -793,8 +796,8 @@ def calculations(bestpathlist1, bestpathlist2, bestpathlist3, apathlist1, apathl
     for idx in range(5):
         if apathlist2[idx] is None:
             print("Solution Path #" + str(idx + 1) + ": No Solution Found.")
-        #else:
-            #print("Solution Path #" + str(idx + 1) + ": " + str(apathlist2[idx]))
+        else:
+            print("Solution Path #" + str(idx + 1) + ": " + str(apathlist2[idx]))
         
     avg = 0
     
@@ -816,8 +819,8 @@ def calculations(bestpathlist1, bestpathlist2, bestpathlist3, apathlist1, apathl
     for idx in range(5):
         if apathlist3[idx] is None:
             print("Solution Path #" + str(idx + 1) + ": No Solution Found.")
-        #else:
-            #print("Solution Path #" + str(idx + 1) + ": " + str(apathlist3[idx]))
+        else:
+            print("Solution Path #" + str(idx + 1) + ": " + str(apathlist3[idx]))
    
     avg = 0
     
@@ -1040,8 +1043,8 @@ def program(dimension, max):
 
 if __name__ == '__main__':
 
-    max1 = 1000
-    max2 = 2500
+    max1 = 100000
+    max2 = 250000
 
     set1 = program(3, max1)
     set2 = program(4, max2)
