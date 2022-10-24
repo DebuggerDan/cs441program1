@@ -11,15 +11,15 @@ def create8puzzle(idx):
     
     # Create a random 8-puzzle where the blank tile is in a random position, as 'b'
     if idx == 0:
-        puzzle = [[5,1,0],[7,8,6],[2,4,3]]
+        puzzle = [5,1,0,7,8,6,2,4,3]
     if idx == 1:
-        puzzle = [[4,5,0],[6,1,8],[7,3,2]]
+        puzzle = [4,5,0,6,1,8,7,3,2]
     if idx == 2:
-        puzzle = [[2,8,4],[5,1,0],[7,3,6]]
+        puzzle = [2,8,4,5,1,0,7,3,6]
     if idx == 3:
-        puzzle = [[7,5,1],[0,8,3],[4,6,2]]
+        puzzle = [7,5,1,0,8,3,4,6,2]
     if idx == 4:
-        puzzle = [[3,8,4],[6,7,0],[1,5,2]]
+        puzzle = [3,8,4,6,7,0,1,5,2]
     # initpuzzle = []
     # puzzle = []
     # idx = 0
@@ -41,15 +41,15 @@ def create15puzzle(idx):
     
     # Create a random 8-puzzle where the blank tile is in a random position, as 'b'
     if idx == 0:
-        puzzle = [[8,4,0,13],[15,3,14,10],[2,12,11,6],[7,1,9,5]]
+        puzzle = [8,4,0,13,15,3,14,10,2,12,11,6,7,1,9,5]
     if idx == 1:
-        puzzle = [[5,9,7,15],[0,2,10,8],[14,11,6,4],[13,3,1,12]]
+        puzzle = [5,9,7,15,0,2,10,8,14,11,6,4,13,3,1,12]
     if idx == 2:
-        puzzle = [[2,12,13,9],[11,1,7,8],[0,10,14,6],[15,5,3,4]]
+        puzzle = [2,12,13,9,11,1,7,8,0,10,14,6,15,5,3,4]
     if idx == 3:
-        puzzle = [[8,14,2,15],[12,13,5,1],[4,9,6,0],[3,10,7,11]]
+        puzzle = [8,14,2,15,12,13,5,1,4,9,6,0,3,10,7,11]
     if idx == 4:
-        puzzle = [[10,5,8,6],[3,12,14,7],[9,15,0,2],[4,11,13,1]]
+        puzzle = [10,5,8,6,3,12,14,7,9,15,0,2,4,11,13,1]
         
     # initpuzzle = []
     # puzzle = []
@@ -272,9 +272,9 @@ def heuristic_two(puzzle2, goal, dimension):
             currrow = i // dimension
             currcolumn = i % dimension
             
-            cost3 += abs(currrow - (goalindex // dimension)) + abs(currcolumn - (goalindex % dimension))
+            cost2 += abs(currrow - (goalindex // dimension)) + abs(currcolumn - (goalindex % dimension))
 
-    return cost3
+    return cost2
 
     # else:
     #     # Debug Statement #2b
@@ -685,16 +685,17 @@ def bestfirstsearch(givenpuzzle, goal, dimension, type, max):
 def program(dimension, max):
     if dimension == 3:
         for iteration1 in range(5):
-            goal = [[1,2,3],[4,5,6],[7,8,0]]
+            #goal = [[1,2,3],[4,5,6],[7,8,0]]
+            goal = [1, 2, 3, 4, 5, 6, 7, 8, 0]
             thepuzzle = []
             thepuzzle = create8puzzle(iteration1)
             print("The " + str(iteration1 + 1) + " Iteration 8-puzzle is:")
             for iteration in range(3):
-                print(thepuzzle[iteration])
+                print(thepuzzle[iteration], thepuzzle[iteration+1], thepuzzle[iteration+2])
             
             print("The goal state of the 8-puzzle is:")
             for iteration in range(3):
-                print(goal[iteration])
+                print(goal[iteration], goal[iteration+1], goal[iteration+2])
                         
             print(str(dimension) + "x" + str(dimension) + " Puzzle Best First & A* Searches: ")
             
@@ -755,16 +756,16 @@ def program(dimension, max):
     
     if dimension == 4:
         for iteration2 in range(5):
-            goal = [[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,0]]
+            goal = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0]
             thepuzzle = []
             thepuzzle = create15puzzle(iteration2)
-            print("The " + str(iteration2 + 1) + " Iteration 15-puzzle is:")
+            print("The " + str(iteration1 + 1) + " Iteration 15-puzzle is:")
             for iteration in range(4):
-                print(thepuzzle[iteration])
+                print(thepuzzle[iteration], thepuzzle[iteration+1], thepuzzle[iteration+2])
             
             print("The goal state of the 15-puzzle is:")
             for iteration in range(4):
-                print(goal[iteration])
+                print(goal[iteration], goal[iteration+1], goal[iteration+2])
                         
             print(str(dimension) + "x" + str(dimension) + " Puzzle Best First & A* Searches: ")
             
