@@ -330,59 +330,85 @@ def generate_moves(themoves, dimension):
     #curr = search(puzzle, 0, dimension)
     #curr = identify(puzzle, 0)
     #curr = list(zip(*np.where(puzzle == 0)))
-    curr_x = 0
-    curr_y = 0
-    for x in range(len(themoves)):
-        for y in range (len(themoves)):
-            # If we have found the location of the blank tile
-            if curr[x][y] == 0:
-                curr_x = x
-                curr_y = y
+    # curr_x = 0
+    # curr_y = 0
+    # for x in range(len(themoves)):
+    #     for y in range (len(themoves)):
+    #         # If we have found the location of the blank tile
+    #         if curr[x][y] == 0:
+    #             curr_x = x
+    #             curr_y = y
                 
-                break
+    #             break
+    blanktile = themoves.index(0)
+    if blanktile >= dimension:
+        # Move the blank tile up
+        newmoves = themoves[:]
+        newmoves[blanktile - dimension], newmoves[blanktile] = newmoves[blanktile], newmoves[blanktile - dimension]
+        generatedmoves.append(newmoves)
     
-    #print(str(curr[curr_x][curr_y]))
+    if blanktile < (dimension * dimension) - dimension:
+        # Move the blank tile down
+        newmoves = themoves[:]
+        newmoves[blanktile + dimension], newmoves[blanktile] = newmoves[blanktile], newmoves[blanktile + dimension]
+        generatedmoves.append(newmoves)
+        
+    if blanktile % dimension != 0:
+        # Move the blank tile left
+        newmoves = themoves[:]
+        newmoves[blanktile - 1], newmoves[blanktile] = newmoves[blanktile], newmoves[blanktile - 1]
+        generatedmoves.append(newmoves)
+        
+    if blanktile % dimension != dimension - 1:
+        # Move the blank tile right
+        newmoves = themoves[:]
+        newmoves[blanktile + 1], newmoves[blanktile] = newmoves[blanktile], newmoves[blanktile + 1]
+        generatedmoves.append(newmoves)
     
-    # If the puzzle is 4x4
-    if dimension:
-        # # If blank tile is not within left row
-        # # if curr >= dimension:
-        # if curr_x != 0:
-        #     moves.append(move(puzzle, curr, curr - dimension))
+    return generatedmoves
+    
+    # #print(str(curr[curr_x][curr_y]))
+    
+    # # If the puzzle is 4x4
+    # if dimension:
+    #     # # If blank tile is not within left row
+    #     # # if curr >= dimension:
+    #     # if curr_x != 0:
+    #     #     moves.append(move(puzzle, curr, curr - dimension))
 
-        # If blank tile is not within left row, move left
-        #if curr < dimension * (dimension - 1):
-        if curr_x != dimension - 1:
-            # For direction, 0 = left, 1 = right, 2 = up, 3 = down
-            generatedmoves.append(move(themoves, curr_x, curr_y, 0, dimension))
+    #     # If blank tile is not within left row, move left
+    #     #if curr < dimension * (dimension - 1):
+    #     if curr_x != dimension - 1:
+    #         # For direction, 0 = left, 1 = right, 2 = up, 3 = down
+    #         generatedmoves.append(move(themoves, curr_x, curr_y, 0, dimension))
             
-        # If blank tile is not within right row, move right
-        #if curr % dimension != dimension - 1:
-        if curr_y != dimension - 1:
-            #moves.append(puzzle[:curr] + [puzzle[curr + 1]] + puzzle[curr + 1:curr + dimension] + [0] + puzzle[curr + dimension + 1:])
-            generatedmoves.append(move(themoves, curr_x, curr_y, 1, dimension))
+    #     # If blank tile is not within right row, move right
+    #     #if curr % dimension != dimension - 1:
+    #     if curr_y != dimension - 1:
+    #         #moves.append(puzzle[:curr] + [puzzle[curr + 1]] + puzzle[curr + 1:curr + dimension] + [0] + puzzle[curr + dimension + 1:])
+    #         generatedmoves.append(move(themoves, curr_x, curr_y, 1, dimension))
             
-        # If blank tile is not within first row, move up
-        #if curr >= dimension:
-        if curr_x != 0:
-            #moves.append(puzzle[:curr - dimension] + [0] + puzzle[curr - dimension + 1:curr] + [puzzle[curr - dimension]] + puzzle[curr + 1:])
-            generatedmoves.append(move(themoves, curr_x, curr_y, 2, dimension))
+    #     # If blank tile is not within first row, move up
+    #     #if curr >= dimension:
+    #     if curr_x != 0:
+    #         #moves.append(puzzle[:curr - dimension] + [0] + puzzle[curr - dimension + 1:curr] + [puzzle[curr - dimension]] + puzzle[curr + 1:])
+    #         generatedmoves.append(move(themoves, curr_x, curr_y, 2, dimension))
             
-        # If blank tile is not within left row, move down
-        #if curr % dimension != 0:
-        if curr_y != 0:
-            #moves.append(puzzle[:curr - 1] + [0] + puzzle[curr:curr + dimension - 1] + [puzzle[curr - 1]] + puzzle[curr + dimension:])
-            generatedmoves.append(move(themoves, curr_x, curr_y, 3, dimension))
+    #     # If blank tile is not within left row, move down
+    #     #if curr % dimension != 0:
+    #     if curr_y != 0:
+    #         #moves.append(puzzle[:curr - 1] + [0] + puzzle[curr:curr + dimension - 1] + [puzzle[curr - 1]] + puzzle[curr + dimension:])
+    #         generatedmoves.append(move(themoves, curr_x, curr_y, 3, dimension))
     
-    # else:
-    #     # Debug Statement #7
-    #     print("Error [generate_moves(puzzle, dimension)]: Invalid dimension!")
-    #     return None
-    # If the puzzle is 3x3
-    #if dimension == 3:
+    # # else:
+    # #     # Debug Statement #7
+    # #     print("Error [generate_moves(puzzle, dimension)]: Invalid dimension!")
+    # #     return None
+    # # If the puzzle is 3x3
+    # #if dimension == 3:
         
             
-    return generatedmoves
+    # return generatedmoves
     
     # # If the puzzle is 3x3
     # if dimension == 3:
